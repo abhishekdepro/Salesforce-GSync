@@ -1,8 +1,18 @@
 var express = require('express');
 var app = express();
-var client = require('gdata-js')('XXX', 'YYY', 'http://localhost:3000/');
+var path = require('path');
+var bodyParser = require('body-parser'); 
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
+var client = require('gdata-js')('662450020031-src31n2gh01o09quq9ulhb5pcqacu23f.apps.googleusercontent.com', 'ds_QZ-JNzi7NFkkBxF508I2D', 'http://localhost:3000/authenticate');
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.get('/authenticate', function (req, res) {
     var token = '';
     var scope = 'https://www.google.com/m8/feeds/'; //contacts
     client.getAccessToken({
@@ -27,7 +37,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/getStuff', function (req, res) {
-    client.getFeed('https://www.google.com/m8/feeds/contacts/default/full', { 'max-results': 10},
+    client.getFeed('https://www.google.com/m8/feeds/contacts/default/full', { 'max-results': 500},
         function (err, feed) {
             res.writeHead(200);
             for (var i in feed.feed.entry) {
