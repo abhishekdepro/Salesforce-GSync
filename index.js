@@ -1,6 +1,6 @@
 var express = require('express');
 var app = express();
-var client = require('gdata-js')('662450020031-src31n2gh01o09quq9ulhb5pcqacu23f.apps.googleusercontent.com', 'ds_QZ-JNzi7NFkkBxF508I2D', 'http://localhost:3000/');
+var client = require('gdata-js')('XXX', 'YYY', 'http://localhost:3000/');
 
 app.get('/', function (req, res) {
     var token = '';
