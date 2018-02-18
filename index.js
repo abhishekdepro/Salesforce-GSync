@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-var client = require('gdata-js')('662450020031-src31n2gh01o09quq9ulhb5pcqacu23f.apps.googleusercontent.com', 'ds_QZ-JNzi7NFkkBxF508I2D', 'http://localhost:3000/authenticate');
+var client = require('gdata-js')('XXX', 'YYY', 'http://localhost:3000/authenticate');
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
