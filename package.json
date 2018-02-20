@@ -4,7 +4,9 @@
   "description": "Salesforce Google SyncUp",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
   },
   "author": "Abhishek Dey",
   "license": "ISC",
@@ -12,6 +14,10 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "gdata-js": "^3.0.1",
-    "google-contacts": "^0.1.5"
+    "google-contacts": "^0.1.5",
+    "jsforce": "^1.8.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.15.1"
   }
 }
