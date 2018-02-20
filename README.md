@@ -9,6 +9,7 @@ Simply Click on Authenticate with Google Button and voila!
 Built with:
 
 <ul>
-<li>Node.js</li>
-<li>Google Contacts v3.0 API</li>
+  <li>Node.js</li>
+  <li>Google Contacts v3.0 API</li>
+  <li>JSforce.js</li>
 </ul>
