@@ -17,8 +17,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 //Google Contacts API Client auth
-var client = require('gdata-js')(config.GOOGLE.apiKey, config.GOOGLE.apiSecret, 'https://salesforce-gsync.herokuapp.com/authenticate');
-//var client = require('gdata-js')(config.GOOGLE.apiKey, config.GOOGLE.apiSecret, 'http://localhost:3000/authenticate');
+var client = require('gdata-js')(config.GOOGLE.apiKey, config.GOOGLE.apiSecret, 'http://localhost:3000/authenticate');
 
 //Salesforce Connection using jsForce
 var conn = new jsforce.Connection({
