@@ -22,38 +22,32 @@
     <script>
         function authenticate() {
             console.log('authenticate pressed..');
-            window.open(
-                'http://localhost:3000/authenticate',
-                '_blank' // <- This is what makes it open in a new window.
-            );
-            //document.location.href = "/authenticate";
+            document.location.href = "/authenticate";
         };
     </script>
 </head>
 
 <body>
     <div class="container-fluid">
-        <div class="container">
-            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                Sync your Google Contacts easily with Salesforce! Based on Google Contacts v3.0 API.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        </div>
         <!--<div class="jumbotron">-->
         <div class="container">
-            <h1 class="display-4">Google - Salesforce Contacts Sync</h1>
-            <p class="lead">
-                Sync your Google Contacts easily with Salesforce! Based on Google Contacts v3.0 API.
-                <br/> Simply Click on
-                <b class="text-primary">Authenticate with Google</b> Button and voila!
-            </p>
-            <br/>
-            <button type="button" class="btn btn-primary" target="_blank" onclick="authenticate();">
-                <img style="height:25px;" src="https://developers.google.com/identity/images/g-logo.png" class="img-fluid img-thumbnail"
-                    alt="Responsive image"> Authenticate with Google
-            </button>
+            <h1 class="display-4">Fetched Contacts</h1>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Contact Name</th>
+                    <th scope="col">Phone Number</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% for (var i = 0; i < contacts.length; i++) { %>
+                        <tr>
+                          <td><%= contacts[i].name %></td>
+                          <td><%= contacts[i].phone %></td>
+                        </tr>    
+                       <% } %>
+                </tbody>
+              </table>
         </div>
         <!--</div>-->
     </div>

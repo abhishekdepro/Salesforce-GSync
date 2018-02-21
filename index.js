@@ -7,6 +7,7 @@ var jsforce = require('jsforce'); //used for Salesforce Connection
 //global variables
 var sfAccessToken = '';
 var sfInstanceURL = '';
+var contactEntryList = [];
 
 //Environment Config Variables
 var config = require('./config');
@@ -15,9 +16,11 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
+app.set('view engine', 'ejs');
 
 //Google Contacts API Client auth
-var client = require('gdata-js')(config.GOOGLE.apiKey, config.GOOGLE.apiSecret, 'http://localhost:3000/authenticate');
+var client = require('gdata-js')(config.GOOGLE.apiKey, config.GOOGLE.apiSecret, 'https://salesforce-gsync.herokuapp.com/authenticate');
+//var client = require('gdata-js')(config.GOOGLE.apiKey, config.GOOGLE.apiSecret, 'http://localhost:3000/authenticate');
 
 //Salesforce Connection using jsForce
 var conn = new jsforce.Connection({
@@ -36,15 +39,6 @@ conn.login(config.SALESFORCE.username, config.SALESFORCE.password, function (err
     // logged in user property
     console.log("User ID: " + userInfo.id);
     console.log("Org ID: " + userInfo.organizationId);
-
-
-    //SOQL Queries
-    var records = [];
-    conn.query("SELECT Id, Name FROM Account ORDER BY CreatedDate ASC LIMIT 2", function (err, result) {
-        if (err) { return console.error(err); }
-        console.log("total : " + result.totalSize);
-        console.log("fetched : " + result.records[0].Name);
-    });
 });
 
 app.get('/', function (req, res) {
@@ -56,7 +50,7 @@ app.get('/authenticate', function (req, res) {
     var scope = 'https://www.google.com/m8/feeds/'; //contacts
     client.getAccessToken({
         scope: scope,
-        access_type: 'offline',
+        access_type: 'online',
         approval_prompt: 'force'
     }, req, res, function (err, _token) {
         if (err) {
@@ -72,11 +66,10 @@ app.get('/authenticate', function (req, res) {
 });
 
 app.get('/getStuff', function (req, res) {
-    var contactEntryList = [];
+    contactEntryList = [];
 
-    client.getFeed('https://www.google.com/m8/feeds/contacts/default/full', { 'max-results': 5 },
+    client.getFeed('https://www.google.com/m8/feeds/contacts/default/full', { 'max-results': 100 },
         function (err, feed) {
-            res.writeHead(200);
             for (var i in feed.feed.entry) {
                 var contactEntry = {};
                 if (feed.feed.entry[i].gd$phoneNumber != undefined) {
@@ -86,38 +79,66 @@ app.get('/getStuff', function (req, res) {
                         phoneNumber = phoneNumber.substring(3);
                         console.log(phoneNumber);
                     }
-                    res.write(phoneNumber + '\n' + JSON.stringify(feed.feed.entry[i].title.$t));
-                    res.write('\n\n');
+                    //res.write(phoneNumber + '\n' + JSON.stringify(feed.feed.entry[i].title.$t));
+                    //res.write('\n\n');
                     contactEntry.name = JSON.stringify(feed.feed.entry[i].title.$t);
                     contactEntry.phone = phoneNumber;
                     contactEntryList.push(contactEntry);
                 }
             }
-            var accountList = [];
-            for(var cEntry in contactEntryList){
-                console.log('cEntry..'+JSON.stringify(contactEntryList[cEntry]));
-                var acc = {};
-                acc.Name = JSON.parse(contactEntryList[cEntry].name);
-                acc.Phone = JSON.parse(contactEntryList[cEntry].phone);
-                accountList.push(acc);
-            }
-            console.log('accountList..'+JSON.stringify(accountList));
-            //insert into Salesforce Accounts
-            conn.sobject("Account").create(accountList,
-                function (err, rets) {
-                    if (err) { return console.error(err); }
-                    for (var i = 0; i < rets.length; i++) {
-                        if (rets[i].success) {
-                            console.log("Created record id : " + rets[i].id);
+
+            //SOQL Queries
+            var records = [];
+            conn.query("SELECT Id, Name, Phone FROM Account", function (err, result) {
+                if (err) { return console.error(err); }
+                console.log("total : " + result.totalSize);
+                console.log("fetched : " + result.records[0].Name);
+                records = result.records;
+
+                var accountList = [];
+                for (var cEntry in contactEntryList) {
+                    var acc = {};
+                    acc.Name = JSON.parse(contactEntryList[cEntry].name);
+                    acc.Phone = JSON.parse(contactEntryList[cEntry].phone);
+                    var isExists = false;
+                    for (var rec in records) {
+                        if (records[rec].Name == acc.Name && records[rec].Phone == acc.Phone) {
+                            isExists = true;
+                            break;
+                        } else {
+                            continue;
                         }
                     }
-                    // ...
-                });
+                    if (!isExists) { accountList.push(acc) };
+                }
+                console.log('accountList..' + JSON.stringify(accountList));
 
-            res.end();
+                //insert into Salesforce Accounts
+                conn.sobject("Account").create(accountList,
+                    function (err, rets) {
+                        if (err) { return console.error(err); }
+                        for (var i = 0; i < rets.length; i++) {
+                            if (rets[i].success) {
+                                console.log("Created record id : " + rets[i].id);
+                            }
+                        }
+                    });
+            });
+
+
+            //redirect to show contacts page
+            res.redirect('/showContacts');
+
         });
 });
 
+
+//display Contacts fetched from Google
+app.get('/showContacts', function (req, res) {
+    res.render('contact.ejs', { contacts: contactEntryList });
+});
+
+//start server
 app.listen(process.env.PORT || 3000, function () {
     console.log('Example app listening on port 3000!');
 });
