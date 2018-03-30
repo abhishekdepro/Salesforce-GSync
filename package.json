@@ -5,14 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js"
   },
   "author": "Abhishek Dey",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "ejs": "^1.0.0",
+    "ejs": "^2.5.5",
     "express": "^4.16.2",
     "gdata-js": "^3.0.1",
     "google-contacts": "^0.1.5",
