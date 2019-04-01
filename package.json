@@ -15,8 +15,8 @@
     "express": "^4.16.2",
     "gdata-js": "^3.0.1",
     "google-contacts": "^0.1.5",
-    "jsforce": "^1.8.0",
-    "open": "0.0.5"
+    "jsforce": "^1.8.5",
+    "open": "6.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.15.1"
