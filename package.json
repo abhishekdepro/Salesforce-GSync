@@ -15,7 +15,7 @@
     "express": "^4.16.2",
     "gdata-js": "^3.0.1",
     "google-contacts": "^0.1.5",
-    "jsforce": "^1.8.0",
+    "jsforce": "^1.11.1",
     "open": "0.0.5"
   },
   "devDependencies": {
