@@ -10,12 +10,12 @@
   "author": "Abhishek Dey",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^1.20.4",
     "ejs": "^2.5.5",
-    "express": "^4.16.2",
+    "express": "^4.22.0",
     "gdata-js": "^3.0.1",
     "google-contacts": "^0.1.5",
-    "jsforce": "^1.8.0",
+    "jsforce": "^3.1.0",
     "open": "0.0.5"
   },
   "devDependencies": {
